@@ -11,6 +11,8 @@ public class PlayerMov : MonoBehaviour
     bool wasGrounded;
 
     public bool IsGrounded => controller.isGrounded;
+    public Vector2 MoveInput => moveAction.ReadValue<Vector2>();
+    public float VerticalVelocity => velocity.y;
 
     public event Action OnBeforeMove;
     public event Action<bool> OnGroundStateChange;
@@ -54,7 +56,7 @@ public class PlayerMov : MonoBehaviour
 
     Vector3 GetMovementInput()
     {
-        var moveInput = moveAction.ReadValue<Vector2>();
+        var moveInput = MoveInput;
 
         var input = new Vector3();
 
