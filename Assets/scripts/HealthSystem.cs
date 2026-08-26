@@ -9,17 +9,12 @@ public class HealthSystem : MonoBehaviour
     [Range(0,100)]
     [SerializeField] internal int health = 100;
 
-    void Start()
-    {
-
-    }
-
     void Update()
     {
-        healtUpdate();
+        healthUpdate();
     }
 
-    void healtUpdate()
+    void healthUpdate()
     {
         healthBar.value = health;
     }

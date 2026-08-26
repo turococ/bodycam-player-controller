@@ -1,11 +1,9 @@
-using System;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] internal float sensetivity = 3f;
+    [SerializeField] internal float sensitivity = 3f;
 
     [SerializeField] float CameraYMax = 89f;
     [SerializeField] float CameraYMin = -89f;
@@ -35,8 +33,8 @@ public class CameraController : MonoBehaviour
     {
         var lookInput = lookAction.ReadValue<Vector2>();
 
-        look.y += lookInput.y * sensetivity;
-        look.x += lookInput.x * sensetivity;
+        look.y += lookInput.y * sensitivity * Time.deltaTime;
+        look.x += lookInput.x * sensitivity * Time.deltaTime;
 
         look.y = Mathf.Clamp(look.y, CameraYMin, CameraYMax);
 

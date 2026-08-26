@@ -6,7 +6,7 @@ public class PlayerMov : MonoBehaviour
 {
     [SerializeField] float movementSpeed = 4f;
     [SerializeField] float mass = 1f;
-    [SerializeField] float aceleration = 10f;
+    [SerializeField] float acceleration = 10f;
 
     bool wasGrounded;
 
@@ -75,7 +75,7 @@ public class PlayerMov : MonoBehaviour
 
         var input = GetMovementInput();
 
-        var factor = aceleration * Time.deltaTime;
+        var factor = acceleration * Time.deltaTime;
         velocity.x = Mathf.Lerp(velocity.x, input.x, factor);
         velocity.z = Mathf.Lerp(velocity.z, input.z, factor);
 
