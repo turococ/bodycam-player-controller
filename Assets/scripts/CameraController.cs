@@ -33,8 +33,8 @@ public class CameraController : MonoBehaviour
     {
         var lookInput = lookAction.ReadValue<Vector2>();
 
-        look.y += lookInput.y * sensitivity * Time.deltaTime;
-        look.x += lookInput.x * sensitivity * Time.deltaTime;
+        look.y += lookInput.y * sensitivity;
+        look.x += lookInput.x * sensitivity;
 
         look.y = Mathf.Clamp(look.y, CameraYMin, CameraYMax);
 
