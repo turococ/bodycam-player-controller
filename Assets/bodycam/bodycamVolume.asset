@@ -25,7 +25,7 @@ MonoBehaviour:
   m_MaxSamples:
     m_OverrideState: 0
     m_Value: 6
---- !u!114 &-8793378664176833476
+--- !u!114 &-7223670029046564445
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -34,22 +34,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a6b00fcf518bb94a90b408492e07b44, type: 3}
-  m_Name: FilmGrain
-  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.FilmGrain
+  m_Script: {fileID: 11500000, guid: 24f077503be6ae942a1e1245dbd53ea9, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.Bloom
   active: 1
-  type:
+  quality:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: 1
+  threshold:
+    m_OverrideState: 1
+    m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.25
-  response:
-    m_OverrideState: 1
-    m_Value: 0.8
-  texture:
+    m_Value: 0.025
+  scatter:
+    m_OverrideState: 0
+    m_Value: 0.7
+  tint:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  dirtTexture:
     m_OverrideState: 0
     m_Value: {fileID: 0}
+  dirtIntensity:
+    m_OverrideState: 0
+    m_Value: 0
+  anamorphic:
+    m_OverrideState: 0
+    m_Value: 1
+  m_Resolution:
+    m_OverrideState: 1
+    m_Value: 2
+  m_HighQualityPrefiltering:
+    m_OverrideState: 1
+    m_Value: 0
+  m_HighQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-4495306573323515725
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -198,9 +219,9 @@ MonoBehaviour:
   - {fileID: 5076387841141890330}
   - {fileID: 5581736160453662917}
   - {fileID: -2329685654399996876}
-  - {fileID: -8793378664176833476}
   - {fileID: -8831580407006365221}
   - {fileID: -4495306573323515725}
+  - {fileID: -7223670029046564445}
 --- !u!114 &4826909710515974819
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -244,13 +265,13 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 3
   focusMode:
     m_OverrideState: 1
     m_Value: 1
   focusDistance:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 1.5
   focusDistanceMode:
     m_OverrideState: 1
     m_Value: 0
@@ -268,19 +289,19 @@ MonoBehaviour:
     m_Value: 20
   m_NearSampleCount:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: 3
   m_NearMaxBlur:
     m_OverrideState: 1
-    m_Value: 4
+    m_Value: 8
   m_FarSampleCount:
     m_OverrideState: 1
-    m_Value: 7
+    m_Value: 3
   m_FarMaxBlur:
     m_OverrideState: 1
-    m_Value: 8
+    m_Value: 16
   m_Resolution:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   m_HighQualityFiltering:
     m_OverrideState: 1
     m_Value: 1
@@ -314,7 +335,7 @@ MonoBehaviour:
     m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 2
   maximumVelocity:
     m_OverrideState: 0
     m_Value: 200
@@ -354,13 +375,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d08ce26990eb1a4a9177b860541e702, type: 3}
   m_Name: Exposure
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.Exposure
-  active: 0
+  active: 1
   mode:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   meteringMode:
-    m_OverrideState: 0
-    m_Value: 2
+    m_OverrideState: 1
+    m_Value: 0
   luminanceSource:
     m_OverrideState: 0
     m_Value: 1
@@ -368,13 +389,13 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: -1.1009175
   compensation:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   limitMin:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: -1
   limitMax:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 14
   curveMap:
     m_OverrideState: 0
@@ -455,13 +476,13 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   adaptationMode:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   adaptationSpeedDarkToLight:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 3
   adaptationSpeedLightToDark:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   weightTextureMask:
     m_OverrideState: 0
