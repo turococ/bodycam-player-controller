@@ -22,6 +22,8 @@ public class BodycamShake : MonoBehaviour
     [Header("Reference")]
     [SerializeField] Transform cameraTransform;
 
+    Vector3 basePosition;
+
     PlayerMov player;
 
     float bobVel;
@@ -38,6 +40,7 @@ public class BodycamShake : MonoBehaviour
         player = GetComponent<PlayerMov>();
         if (cameraTransform == null)
             cameraTransform = GetComponentInChildren<Camera>().transform;
+        basePosition = cameraTransform.localPosition;
     }
 
     void LateUpdate()
@@ -60,7 +63,7 @@ public class BodycamShake : MonoBehaviour
         currentHY = Mathf.SmoothDamp(currentHY, targetHY, ref hyVel, smoothTime);
         currentRoll = Mathf.SmoothDampAngle(currentRoll, targetRoll, ref rollVel, smoothTime);
 
-        cameraTransform.localPosition = new Vector3(currentHX, currentBob, currentHY);
+        cameraTransform.localPosition = basePosition + new Vector3(currentHX, currentBob, currentHY);
 
         Vector3 angles = cameraTransform.localEulerAngles;
         float pitch = angles.x > 180f ? angles.x - 360f : angles.x;
@@ -74,7 +77,7 @@ public class BodycamShake : MonoBehaviour
         hyVel = 0f;
         rollVel = 0f;
         currentRoll = 0f;
-        cameraTransform.localPosition = Vector3.zero;
+        cameraTransform.localPosition = basePosition;
 
         Vector3 angles = cameraTransform.localEulerAngles;
         float pitch = angles.x > 180f ? angles.x - 360f : angles.x;

@@ -4,9 +4,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerMov : MonoBehaviour
 {
-    [SerializeField] float movementSpeed = 4f;
+    [SerializeField] internal float movementSpeed = 1f;
+    [SerializeField] internal float runningSpeed = 3f;
     [SerializeField] float mass = 1f;
     [SerializeField] float acceleration = 10f;
+
+    internal float walkSpeedOrigin = 0f;
 
     bool wasGrounded;
 
@@ -27,6 +30,7 @@ public class PlayerMov : MonoBehaviour
 
     void Awake()
     {
+        walkSpeedOrigin = movementSpeed;
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["move"];
