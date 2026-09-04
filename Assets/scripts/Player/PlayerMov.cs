@@ -77,11 +77,12 @@ public class PlayerMov : MonoBehaviour
         movementSpeedMultiplier = 1f;
         OnBeforeMove?.Invoke();
 
-        var input = GetMovementInput();
+        var inputLocal = GetMovementInput();
+        var inputWorld = transform.TransformDirection(inputLocal);
 
-        var factor = acceleration * Time.deltaTime;
-        velocity.x = Mathf.Lerp(velocity.x, input.x, factor);
-        velocity.z = Mathf.Lerp(velocity.z, input.z, factor);
+        var factor = Mathf.Min(acceleration * Time.deltaTime, 1f);
+        velocity.x = Mathf.Lerp(velocity.x, inputWorld.x, factor);
+        velocity.z = Mathf.Lerp(velocity.z, inputWorld.z, factor);
 
         controller.Move(velocity * Time.deltaTime);
     }
