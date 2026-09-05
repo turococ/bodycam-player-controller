@@ -1,23 +1,39 @@
+using Unity.Collections;
 using UnityEngine;
 
 public class BodycamShake : MonoBehaviour
 {
-    [Header("Movement Shake")]
-    [SerializeField] float walkBobAmplitude = 0.02f;
-    [SerializeField] float runBobAmplitude = 0.05f;
-    [SerializeField] float bobSpeed = 8f;
-    [SerializeField] float horizontalShake = 0.005f;
-    [SerializeField] float rollAmount = 0.3f;
+    [Header("Walk & Run Impact")]
+    [SerializeField] float walkFrequency = 10f;
+    [SerializeField] float RunFrequency = 20f;
+    [SerializeField] float verticalBobAmount = 0.04f;
+    [SerializeField] float horizontalSway = 0.015f;
 
-    [Header("Idle Breathing")]
-    [SerializeField] float idleAmplitude = 0.003f;
-    [SerializeField] float idleSpeed = 1.5f;
-    [SerializeField] float idleHorizontal = 0.002f;
-    [SerializeField] float idleRoll = 0.1f;
+    [Header("Elastic Tilt (walk)")]
+    [SerializeField] float walkTiltAmount = 1.5f;
+    [SerializeField] float walkTiltSpeed = 1f;
+
+    [Header("Elastic Tilt (run)")]
+    [SerializeField] float runTiltAmount = 7.0f;
+    [SerializeField] float runTiltSpeed = 8f;
+
+    [Header("Perlin Organic Noise (Walk)")]
+    [SerializeField] float walkNoiseFrequency = 2f;
+    [SerializeField] float walkNoisePosAmount = 0.005f;
+    [SerializeField] float walkNoiseRotAmount = 0.25f;
+
+    [Header("Perlin Organic Noise (Run)")]
+    [SerializeField] float runNoiseFrequency = 5f;
+    [SerializeField] float runNoisePosAmount = 0.015f;
+    [SerializeField] float runNoiseRotAmount = 0.75f;
+
+    [Header("Inertia & Lean")]
+    [SerializeField] float mouseTiltAmount = 1.5f;
 
     [Header("Smoothing")]
-    [SerializeField] float smoothTime = 0.1f;
+    [SerializeField] float smoothTime = 0.08f;
     [SerializeField] float moveThreshold = 0.1f;
+    [SerializeField] float runTransitionSpeed = 5f;
 
     [Header("Reference")]
     [SerializeField] Transform cameraTransform;
@@ -25,62 +41,124 @@ public class BodycamShake : MonoBehaviour
     Vector3 basePosition;
 
     PlayerMov player;
+    CameraController plCam;
+    PlayerRun plRun;
 
-    float bobVel;
-    float hxVel;
-    float hyVel;
-    float rollVel;
-    float currentRoll;
-    float currentBob = 0f;
-    float currentHX = 0f;
-    float currentHY = 0f;
+    Vector3 targetPos;
+    Vector3 currentPos;
+    Vector3 posVel;
+
+    Vector3 targetRot;
+    Vector3 currentRot;
+    Vector3 rotVel;
+
+    float stepCycle = 0f;
+    float lastStepSin = 0f;
+    float impactProgress = 1f;
+    float tiltDirection = 1f;
+
+    float runFactor = 0f;
 
     void Awake()
     {
         player = GetComponent<PlayerMov>();
-        if (cameraTransform == null)
-            cameraTransform = GetComponentInChildren<Camera>().transform;
+        plCam = GetComponent<CameraController>();
+        plRun = GetComponent<PlayerRun>();
         basePosition = cameraTransform.localPosition;
     }
 
     void LateUpdate()
     {
-        float moveMag = player.MoveInput.magnitude;
-        bool moving = player.IsGrounded && moveMag > moveThreshold;
+        var IsRunning = plRun != null && plRun.RunFlag;
+        var input = player.MoveInput;
+        var look = plCam.Look;
+        var moveMag = input.magnitude;
+        var isMoving = player.IsGrounded && moveMag > moveThreshold;
 
-        float amplitude = moving ? Mathf.Lerp(walkBobAmplitude, runBobAmplitude, moveMag) : idleAmplitude;
-        float speed = moving ? bobSpeed : idleSpeed;
-        float hShake = moving ? horizontalShake : idleHorizontal;
-        float rAmount = moving ? rollAmount : idleRoll;
+        var targetRunFactor = (IsRunning && isMoving) ? 1f : 0f;
+        runFactor = Mathf.MoveTowards(runFactor, targetRunFactor, Time.deltaTime * runTransitionSpeed);
 
-        float targetBob = Mathf.Sin(Time.time * speed) * amplitude;
-        float targetHX = Mathf.Sin(Time.time * speed * 0.61f) * hShake;
-        float targetHY = Mathf.Cos(Time.time * speed * 0.73f) * hShake;
-        float targetRoll = Mathf.Sin(Time.time * speed * 0.5f) * rAmount;
+        var currentNoiseFreq = Mathf.Lerp(walkNoiseFrequency, runNoiseFrequency, runFactor);
+        var currentNoisePos = Mathf.Lerp(walkNoisePosAmount, runNoisePosAmount, runFactor);
+        var currentNoiseRot = Mathf.Lerp(walkNoiseRotAmount, runNoiseRotAmount, runFactor);
 
-        currentBob = Mathf.SmoothDamp(currentBob, targetBob, ref bobVel, smoothTime);
-        currentHX = Mathf.SmoothDamp(currentHX, targetHX, ref hxVel, smoothTime);
-        currentHY = Mathf.SmoothDamp(currentHY, targetHY, ref hyVel, smoothTime);
-        currentRoll = Mathf.SmoothDampAngle(currentRoll, targetRoll, ref rollVel, smoothTime);
+        var noiseX = (Mathf.PerlinNoise(Time.time * currentNoiseFreq, 0f) - 0.5f) * 2f;
+        var noiseY = (Mathf.PerlinNoise(0f, Time.time * currentNoiseFreq) - 0.5f) * 2f;
+        var noiseZ = (Mathf.PerlinNoise(Time.time * currentNoiseFreq, Time.time * currentNoiseFreq) - 0.5f) * 2f;
 
-        cameraTransform.localPosition = basePosition + new Vector3(currentHX, currentBob, currentHY);
+        var idlePosNoise = new Vector3(noiseX, noiseY, 0f) * currentNoisePos;
+        var idleRotNoise = new Vector3(noiseY, noiseX, noiseZ) * currentNoiseRot;
 
-        Vector3 angles = cameraTransform.localEulerAngles;
-        float pitch = angles.x > 180f ? angles.x - 360f : angles.x;
-        cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, currentRoll);
+        var walkPosOffset = Vector3.zero;
+
+        var currentTiltAmount = Mathf.Lerp(walkTiltAmount, runTiltAmount, runFactor);
+        var currentTiltSpeed = Mathf.Lerp(walkTiltSpeed, runTiltSpeed, runFactor);
+        var currentStepFreq = Mathf.Lerp(walkFrequency, RunFrequency, runFactor);
+
+        if (isMoving)
+        {
+            stepCycle += Time.deltaTime * currentStepFreq * moveMag;
+            var currentSin = Mathf.Sin(stepCycle);
+
+            if (lastStepSin > 0f && currentSin <= 0f)
+            {
+                impactProgress = 0f;
+                tiltDirection *= -1f;
+            }
+            lastStepSin = currentSin;
+
+            var stepVertical = -Mathf.Abs(currentSin) * verticalBobAmount;
+            var stepHorizontal = Mathf.Cos(stepCycle * 0.5f) * horizontalSway;
+
+            walkPosOffset = new Vector3(stepHorizontal, stepVertical, 0f);
+        }
+
+        var elasticRoll = 0f;
+
+        if (impactProgress < 1f)
+        {
+            impactProgress += Time.deltaTime * currentTiltSpeed;
+            var elasticFactor = 1f - EaseOutElastic(impactProgress);
+
+            elasticRoll = elasticFactor * currentTiltAmount * tiltDirection;
+        }
+
+        var mouseLean = -look.x * mouseTiltAmount;
+
+        targetPos = basePosition + idlePosNoise + walkPosOffset;
+        targetRot = idleRotNoise + new Vector3(0f, 0f, elasticRoll + mouseLean);
+
+        currentPos = Vector3.SmoothDamp(currentPos, targetPos, ref posVel, smoothTime);
+        currentRot = Vector3.SmoothDamp(currentRot, targetRot, ref rotVel, smoothTime);
+
+        cameraTransform.localPosition = currentPos;
+
+        var currentLocalEuler = cameraTransform.localEulerAngles;
+        var pitch = NormalizeAngle(currentLocalEuler.x);
+        var yaw = NormalizeAngle(currentLocalEuler.y);
+
+        cameraTransform.localRotation = Quaternion.Euler(pitch + currentRot.x, yaw + currentRot.y, currentRot.z);
     }
 
-    public void ResetShake()
+    float EaseOutElastic(float x)
     {
-        bobVel = 0f;
-        hxVel = 0f;
-        hyVel = 0f;
-        rollVel = 0f;
-        currentRoll = 0f;
-        cameraTransform.localPosition = basePosition;
+        x = Mathf.Clamp01(x);
 
-        Vector3 angles = cameraTransform.localEulerAngles;
-        float pitch = angles.x > 180f ? angles.x - 360f : angles.x;
-        cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        if (x == 0f) return 0f;
+        if (x == 1f) return 1f;
+
+        const float c4 = (2f * Mathf.PI) / 3f;
+
+        return Mathf.Pow(2f, -10f * x) * Mathf.Sin((x * 10f - 0.75f) * c4) + 1f;
+    }
+
+    float NormalizeAngle(float angle)
+    {
+        if (angle > 180f)
+            angle -= 360f;
+        else if (angle <= -180f)
+            angle += 360f;
+
+        return angle;
     }
 }

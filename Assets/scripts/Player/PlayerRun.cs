@@ -8,6 +8,10 @@ public class PlayerRun : MonoBehaviour
     PlayerInput playerInput;
     InputAction runningAction;
 
+    bool IsRunning;
+
+    internal bool RunFlag;
+
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -23,8 +27,10 @@ public class PlayerRun : MonoBehaviour
 
     void RunningAction()
     {
-        bool isRunning = runningAction.IsPressed();
+        bool IsRunning = runningAction.IsPressed();
+        
+        RunFlag = IsRunning ? true : false;
 
-        playerMov.movementSpeed = isRunning ? playerMov.runningSpeed : playerMov.walkSpeedOrigin;
+        playerMov.movementSpeed = IsRunning ? playerMov.runningSpeed : playerMov.walkSpeedOrigin;
     }
 }

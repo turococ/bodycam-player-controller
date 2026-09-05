@@ -14,6 +14,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] Transform cameraTransform;
 
     Vector2 look;
+    internal Vector2 Look;      // for bodycamshake
 
     float yVel;
     float xVel;
@@ -52,6 +53,8 @@ public class CameraController : MonoBehaviour
     void UpdateCameraLook()
     {
         var lookInput = lookAction.ReadValue<Vector2>();
+
+        Look = lookInput;
 
         look.y -= lookInput.y * sensitivity;
         look.x += lookInput.x * sensitivity;

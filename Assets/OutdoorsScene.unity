@@ -94,7 +94,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 8aa376b3d1442c54b8eeefb1a7bb2f76, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2258,10 +2258,6 @@ GameObject:
   - component: {fileID: 248485353}
   - component: {fileID: 248485352}
   - component: {fileID: 248485351}
-  - component: {fileID: 248485355}
-  - component: {fileID: 248485356}
-  - component: {fileID: 248485357}
-  - component: {fileID: 248485358}
   - component: {fileID: 248485359}
   - component: {fileID: 248485360}
   m_Layer: 0
@@ -2405,7 +2401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb67f7159b4dd1b498c6659f1baa7273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
-  jumpSpeed: 7
+  jumpSpeed: 1
   jumpPressBufferTime: 0.05
   jumpGroundedGraceTime: 0.02
 --- !u!114 &248485352
@@ -2420,10 +2416,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ca51de10684fb5429e54cdb0e4c8e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMov
-  movementSpeed: 2
-  runningSpeed: 4
+  movementSpeed: 1.5
+  runningSpeed: 3
   mass: 1
   acceleration: 15
+  cameraTransform: {fileID: 1823688467}
 --- !u!114 &248485353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2471,82 +2468,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &248485355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 248485344}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91fcef132a7905649b56e725bf94b7de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIMove
-  player: {fileID: 248485352}
-  rectTransform: {fileID: 2126559153}
-  sideShift: 18
-  jumpDrop: 25
-  fallRise: 50
-  forwardZoom: 0.03
-  shakeAmount: 5
-  shakeSpeed: 10
-  smoothness: 5
-  verticalSmoothTime: 0.25
---- !u!114 &248485356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 248485344}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8016a7a81eb92404485ea6f27c61137a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
-  healthBar: {fileID: 1491063396}
-  health: 100
---- !u!114 &248485357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 248485344}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb6ee1d911b0f147aca5811c7dbb9fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterUIAnimation
-  characterAnimator: {fileID: 707771888}
---- !u!54 &248485358
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 248485344}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &248485359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2559,17 +2480,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bbd71ba39f04cc4f8bdba805db32014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BodycamShake
-  walkBobAmplitude: 0.02
-  runBobAmplitude: 0.05
-  bobSpeed: 8
-  horizontalShake: 0.005
-  rollAmount: 0.3
-  idleAmplitude: 0.003
-  idleSpeed: 1.5
-  idleHorizontal: 0.002
-  idleRoll: 0.1
+  walkFrequency: 10
+  RunFrequency: 20
+  verticalBobAmount: 0
+  horizontalSway: 0.015
+  walkTiltAmount: 1.5
+  walkTiltSpeed: 1
+  runTiltAmount: 2
+  runTiltSpeed: 1
+  walkNoiseFrequency: 2
+  walkNoisePosAmount: 0
+  walkNoiseRotAmount: 0.015
+  runNoiseFrequency: 5
+  runNoisePosAmount: 0.01
+  runNoiseRotAmount: 0.25
+  mouseTiltAmount: 1.5
   smoothTime: 0.1
   moveThreshold: 0.1
+  runTransitionSpeed: 2
   cameraTransform: {fileID: 1823688467}
 --- !u!114 &248485360
 MonoBehaviour:

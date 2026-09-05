@@ -9,13 +9,14 @@ public class PlayerMov : MonoBehaviour
     [SerializeField] float mass = 1f;
     [SerializeField] float acceleration = 10f;
 
+    [SerializeField] Transform cameraTransform;
+
     internal float walkSpeedOrigin = 0f;
 
     bool wasGrounded;
 
     public bool IsGrounded => controller.isGrounded;
     public Vector2 MoveInput => moveAction.ReadValue<Vector2>();
-    public float VerticalVelocity => velocity.y;
 
     public event Action OnBeforeMove;
     public event Action<bool> OnGroundStateChange;
@@ -34,6 +35,9 @@ public class PlayerMov : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["move"];
+        
+        if (cameraTransform == null)
+            cameraTransform = Camera.main != null ? Camera.main.transform : null;
     }
 
     void Update()
@@ -64,8 +68,23 @@ public class PlayerMov : MonoBehaviour
 
         var input = new Vector3();
 
-        input += transform.forward * moveInput.y;
-        input += transform.right * moveInput.x;
+        if (cameraTransform != null)
+        {
+            var cameraForward = cameraTransform.forward;
+            cameraForward.y = 0f;
+            cameraForward = cameraForward.normalized;
+
+            var cameraRight = new Vector3(cameraForward.z, 0f, -cameraForward.x);
+
+            input += cameraForward * moveInput.y;
+            input += cameraRight * moveInput.x;
+        }
+        else
+        {
+            input += transform.forward * moveInput.y;
+            input += transform.right * moveInput.x;
+        }
+
         input = Vector3.ClampMagnitude(input, 1f);
         input *= movementSpeed * movementSpeedMultiplier;
 
@@ -77,12 +96,12 @@ public class PlayerMov : MonoBehaviour
         movementSpeedMultiplier = 1f;
         OnBeforeMove?.Invoke();
 
-        var inputLocal = GetMovementInput();
-        var inputWorld = transform.TransformDirection(inputLocal);
+        var input = GetMovementInput();
 
-        var factor = Mathf.Min(acceleration * Time.deltaTime, 1f);
-        velocity.x = Mathf.Lerp(velocity.x, inputWorld.x, factor);
-        velocity.z = Mathf.Lerp(velocity.z, inputWorld.z, factor);
+        var factor = acceleration * Time.deltaTime;
+        velocity.x = Mathf.Lerp(velocity.x, input.x, factor);
+        velocity.z = Mathf.Lerp(velocity.z, input.z, factor);
+
 
         controller.Move(velocity * Time.deltaTime);
     }
