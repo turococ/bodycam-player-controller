@@ -48,7 +48,7 @@ public class BodycamShake : MonoBehaviour
     PlayerMov player;
     CameraController plCam;
     PlayerRun plRun;
-    WalkSound walksound;
+    [SerializeField]WalkSound walksound;
 
     Vector3 targetPos;
     Vector3 currentPos;
@@ -70,7 +70,6 @@ public class BodycamShake : MonoBehaviour
         player = GetComponent<PlayerMov>();
         plCam = GetComponent<CameraController>();
         plRun = GetComponent<PlayerRun>();
-        walksound = GetComponentInChildren<WalkSound>();
         basePosition = cameraTransform.localPosition;
     }
 

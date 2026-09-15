@@ -199,28 +199,7 @@ MonoBehaviour:
       - rid: 4637342543425568798
       - rid: 4637342543425568799
     m_RuntimeSettings:
-      m_List:
-      - rid: 8556427327610290176
-      - rid: 8556427327610290180
-      - rid: 4637342543425568771
-      - rid: 4637342543425568772
-      - rid: 4637342543425568774
-      - rid: 4637342543425568776
-      - rid: 4637342543425568777
-      - rid: 4637342543425568779
-      - rid: 4637342543425568780
-      - rid: 4637342543425568781
-      - rid: 4637342543425568782
-      - rid: 4637342543425568783
-      - rid: 4637342543425568785
-      - rid: 4637342543425568788
-      - rid: 4637342543425568790
-      - rid: 4637342543425568791
-      - rid: 4637342543425568792
-      - rid: 4637342543425568795
-      - rid: 4637342543425568796
-      - rid: 4637342543425568797
-      - rid: 4637342543425568798
+      m_List: []
   renderingLayerNames:
   - Light Layer default
   - Light Layer 1
@@ -395,7 +374,7 @@ MonoBehaviour:
       type: {class: HDRPDefaultVolumeProfileSettings, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:
         m_Version: 0
-        m_VolumeProfile: {fileID: 11400000, guid: 14b392ee213d25a48b1feddbd9f5a9be, type: 2}
+        m_VolumeProfile: {fileID: 11400000, guid: c2b0234cd69edd5459b9b92ae523f247, type: 2}
     - rid: 4637342543425568781
       type: {class: SpecularFadeSettings, ns: UnityEngine.Rendering.HighDefinition, asm: Unity.RenderPipelines.HighDefinition.Runtime}
       data:

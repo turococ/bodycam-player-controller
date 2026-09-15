@@ -49,9 +49,10 @@ public class PlayerCrouch : MonoBehaviour
         {
             float heightTarget = standartHeight;
 
-            if (!isCrouching && isCrouching)
+            if (!isCrouching)
             {
                 var castOrigin = transform.position + new Vector3(0, currentHeight / 2, 0);
+                Debug.DrawRay(castOrigin, Vector3.up * 0.2f, Color.red);
                 if (Physics.Raycast(castOrigin, Vector3.up, out RaycastHit hit, 0.2f))
                 {
                     var DistanceToCeiling = hit.point.y - castOrigin.y;
